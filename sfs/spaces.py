@@ -3,12 +3,25 @@ import functools
 from rdflib import Literal
 from rdflib.namespace import FOAF
 
-from sfs.constraint import PrimitiveConstraint
+from sfs.constraint import (AbnormalArgument, IndirectConstraint,
+                            PrimitiveConstraint)
 
+
+class ConstraintCreator(object):
+    def __init__(self, predicate):
+        self.predicate = predicate
+
+    def __call__(self,
+                 obj=AbnormalArgument.Unspecified,
+                 subj=AbnormalArgument.Unspecified):
+        return PrimitiveConstraint(self.predicate, obj, subj)
+
+    def __mul__(self, constraint):
+        return IndirectConstraint(self.predicate, constraint)
 
 class ConstraintSpace(object):
     def __getattr__(self, attr_name):
-        return functools.partial(PrimitiveConstraint, getattr(FOAF, attr_name))
+        return ConstraintCreator(getattr(FOAF, attr_name))
 
 
 class ObjectSpace(object):

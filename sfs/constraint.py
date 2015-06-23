@@ -36,3 +36,16 @@ class PrimitiveConstraint(Constraint):
         self.subj = subj
         # Exactly one must be spcified
         assert (obj != AbnormalArgument.Unspecified) ^ (subj != AbnormalArgument.Unspecified)
+
+
+class IndirectConstraint(Constraint):
+    def __init__(self,
+                 predicate,
+                 obj_constraint=AbnormalArgument.Unspecified,
+                 subj_constraint=AbnormalArgument.Unspecified):
+        self.predicate = predicate
+        self.obj_constraint = obj_constraint
+        self.subj_constraint = subj_constraint
+        # Exactly one must be spcified
+        assert (obj_constraint != AbnormalArgument.Unspecified) ^ (subj_constraint != AbnormalArgument.Unspecified)
+
