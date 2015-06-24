@@ -58,26 +58,26 @@ class BasicInteractionWorks(TraverserTestCase):
         self.assertEqual(node_titles, set(titles))
 
     @needs_spaces
-    def test_get_rhea_photos(self, cos, tys):
+    def test_get_rhea_photos(self, cos, tys, _obs):
         constraint = cos.isa(tys.Photo) & cos.features(tys.Persons.Rhea)
         photos = self.traverser.getall(constraint)
         self.assert_have_titles(photos, ["Photo", "Photo3"])
 
     @needs_spaces
-    def test_get_jason_photos(self, cos, tys):
+    def test_get_jason_photos(self, cos, tys, _obs):
         constraint = cos.isa(tys.Photo) & cos.features(tys.Persons.Jason)
         photos = self.traverser.getall(constraint)
         self.assert_have_titles(photos, ["Photo2", "Photo3"])
 
     @needs_spaces
-    def test_get_compound(self, cos, tys):
+    def test_get_compound(self, cos, tys, _obs):
         constraint = (cos.isa(tys.Photo) & cos.features(tys.Persons.Jason)
                       & cos.features(tys.Persons.Rhea))
         photos = self.traverser.getall(constraint)
         self.assert_have_titles(photos, ["Photo3"])
 
     @needs_spaces
-    def test_get_indirect(self, cos, tys):
+    def test_get_indirect(self, cos, tys, _obs):
         constraint = (cos.isa(tys.Photo) &
                       (cos.features * cos.isa(tys.Girl)))
 
@@ -85,9 +85,18 @@ class BasicInteractionWorks(TraverserTestCase):
         self.assert_have_titles(photos, ["Photo", "Photo3"])
 
     @needs_spaces
-    def test_get_indirect_compound(self, cos, tys):
+    def test_get_indirect_compound(self, cos, tys, _obs):
         constraint = (cos.isa(tys.Photo) &
                       cos.features(tys.Persons.jason) &
+                      (cos.features * cos.isa(tys.Girl)))
+
+        photos = self.traverser.getall(constraint)
+        self.assert_have_titles(photos, ["Photo3"])
+
+    @needs_spaces
+    def test_general_object_space(self, cos, tys, obs):
+        constraint = (cos.isa(tys.Photo) &
+                      cos.features(obs.jason) &
                       (cos.features * cos.isa(tys.Girl)))
 
         photos = self.traverser.getall(constraint)

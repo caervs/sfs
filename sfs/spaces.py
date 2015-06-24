@@ -40,6 +40,17 @@ class ObjectSpace(object):
         raise AttributeError(attr_name)
 
 
+class GeneralObjectSpace(object):
+    def __init__(self, graph):
+        self.graph = graph
+
+    def __getattr__(self, obj_name):
+        subjects = list(self.graph.subjects(FOAF.hasname, Literal(obj_name)))
+        if len(subjects) != 1:
+            raise AttributeError(obj_name, len(subjects))
+        return subjects[0]
+
+
 class TypeSpace(object):
     def __init__(self, graph):
         self.graph = graph
